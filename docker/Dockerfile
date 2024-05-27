@@ -46,7 +46,6 @@ RUN rustup component add rust-src
 
 RUN cargo install --locked --version ${bindgen_version} bindgen
 
-RUN apt-get install -y qemu-system
 
 RUN  mkdir /workspace
 
