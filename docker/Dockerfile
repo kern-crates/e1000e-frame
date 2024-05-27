@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 ARG rust_version
 ARG bindgen_version
@@ -16,13 +16,13 @@ RUN sed -i 's@http://.*ubuntu.com@http://repo.huaweicloud.com@g' /etc/apt/source
 RUN apt-get clean
 RUN apt-get -y update --fix-missing
 
-RUN apt-get install -y git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc flex clang bison lld libclang-dev curl
-
+RUN apt-get install -y git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc flex clang bison lld libclang-dev curl gdb  libelf-dev  binutils
+RUN apt-get install -y llvm
 
 ENV RUSTUP_DIST_SERVER "https://rsproxy.cn"
 ENV RUSTUP_UPDATE_ROOT "https://rsproxy.cn/rustup"
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://rsproxy.cn/rustup-init.sh | bash -s -- -y
+RUN curl --proto '=https' --tlsv1.2 -sSf https://rsproxy.cn/rustup-init.sh | bash -s -- -y --default-toolchain ${rust_version}
 
 ENV PATH="/root/.cargo/bin:${PATH}"
 
@@ -39,13 +39,14 @@ index = "https://rsproxy.cn/crates.io-index"
 git-fetch-with-cli = true
 EOF
 
-RUN rustup default ${rust_version}
 RUN rustup component add rustfmt
 RUN rustup component add clippy
 RUN rustup component add rust-src
 
 
 RUN cargo install --locked --version ${bindgen_version} bindgen
+
+RUN apt-get install -y qemu-system
 
 RUN  mkdir /workspace
 
