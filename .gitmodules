@@ -1,0 +1,6 @@
+[submodule "linux"]
+	path = linux
+	url = git@github.com:elliott10/linux.git
+[submodule "driver-e1000"]
+	path = driver-e1000
+	url = git@gitee.com:zr233/e1000-rust.git
