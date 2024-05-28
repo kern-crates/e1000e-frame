@@ -15,9 +15,8 @@ RUN sed -i 's@http://.*ubuntu.com@http://repo.huaweicloud.com@g' /etc/apt/source
 
 RUN apt-get clean
 RUN apt-get -y update --fix-missing
-
-RUN apt-get install -y git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc flex clang bison lld libclang-dev curl gdb  libelf-dev  binutils
-RUN apt-get install -y llvm
+RUN apt-get install -y curl git  build-essential libssl-dev libclang-dev clang llvm lld 
+# 安装Rust
 
 ENV RUSTUP_DIST_SERVER "https://rsproxy.cn"
 ENV RUSTUP_UPDATE_ROOT "https://rsproxy.cn/rustup"
@@ -42,10 +41,10 @@ EOF
 RUN rustup component add rustfmt
 RUN rustup component add clippy
 RUN rustup component add rust-src
-
-
 RUN cargo install --locked --version ${bindgen_version} bindgen
 
+# 安装Linux依赖
+RUN apt-get install -y fakeroot ncurses-dev xz-utils  bc flex  bison gdb  libelf-dev  binutils  kmod
 
 RUN  mkdir /workspace
 
