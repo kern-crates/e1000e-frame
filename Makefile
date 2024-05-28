@@ -66,7 +66,6 @@ qemu:
   		-nographic -vga none \
 		-append "root=/dev/sda console=ttyS0" -nographic \
 		-no-reboot \
-		-nic tap,id=net0,ifname=tap0,script=no,downscript=no
-		-device e1000, netdev=net0,mac=52:54:00:12:34:56
+		-nic user,model=e1000e,id=net1,net=192.168.1.0/24,dhcpstart=192.168.1.1
 
 	

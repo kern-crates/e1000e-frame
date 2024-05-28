@@ -1,16 +1,7 @@
 MNT = /mnt/rootfs-debian
 
 default:
-	echo "make rootfs: $(FS_BASE)"
-	if [ ! -d $(FS_SRC) ];then \
-	sudo debootstrap --arch=amd64 \
-	--include=locales,vim,bash-completion,\
-	udev,net-tools,iputils-ping,ethtool,rsyslog,bash-completion,kmod,pciutils,iperf3,ifupdown \
-	buster   $(FS_BASE)  https://mirrors.ustc.edu.cn/debian/ ; \
-	sudo sed -i '/^root/ { s/:x:/::/ }' $(FS_BASE)/etc/passwd ; \
-	fi
-
-	echo "rootfs base ok"
+	sudo ./make_base.sh $(FS_SRC)
 
 image:
 	if [ -e "$(FS_IMAGE_NAME)" ]; then \
