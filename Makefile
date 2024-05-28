@@ -7,7 +7,7 @@ RUST_VERSION=$(shell $(KDIR)/scripts/min-tool-version.sh rustc)
 BINDGEN_VERSION=$(shell $(KDIR)/scripts/min-tool-version.sh bindgen)
 RUN=docker run --rm -it -v $(DIR):$(DIR) $(DOCKER_IMAGE)
 SUB_FS=$(DIR)rootfs
-export FS_BASE=debian12
+export FS_BASE=fs_base
 export FS_SRC=$(SUB_FS)/$(FS_BASE)
 export FS_IMAGE_NAME=initrd.img
 MOD_PATH=$(FS_SRC)
@@ -44,7 +44,7 @@ kernel:
 all:
 	$(MAKE) kernel
 	$(MAKE) e1000
-	
+
 
 install:
 	$(KMAKE)  modules_install	INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(FS_SRC)

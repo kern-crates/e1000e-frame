@@ -4,10 +4,12 @@ default:
 	echo "make rootfs: $(FS_BASE)"
 	if [ ! -d $(FS_SRC) ];then \
 	sudo debootstrap --arch=amd64 \
-	--include=systemd,systemd-coredump,makedev,locales,vim,bash-completion,\
-	udev,net-tools,iputils-ping,ethtool,ifupdown,rsyslog,bash-completion,iperf3,kmod,pciutils \
-	buster $(FS_BASE) http://mirrors.163.com/debian/ ; \
+	--include=locales,vim,bash-completion,\
+	udev,net-tools,iputils-ping,ethtool,rsyslog,bash-completion,kmod,pciutils,iperf3,ifupdown \
+	buster   $(FS_BASE)  https://mirrors.ustc.edu.cn/debian/ ; \
+	sudo sed -i '/^root/ { s/:x:/::/ }' $(FS_BASE)/etc/passwd ; \
 	fi
+
 	echo "rootfs base ok"
 
 image:
