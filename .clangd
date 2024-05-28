@@ -1,0 +1,6 @@
+CompileFlags:
+  Remove: [-mabi=lp64, -fconserve-stack, -fno-allow-store-data-races, 
+  -mfunction-return=thunk-extern, -mindirect-branch-cs-prefix, -mindirect-branch-register, 
+  -mindirect-branch=thunk-extern, -mskip-rax-setup, -mpreferred-stack-boundary=3, -mno-fp-ret-in-387,
+  -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
+  ]

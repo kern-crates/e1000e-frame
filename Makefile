@@ -19,6 +19,7 @@ default:
 	$(KMAKE) -j$(shell nproc)
 	$(KMAKE) modules -j$(shell nproc)
 	$(KMAKE) bzImage
+	$(KMAKE) rust-analyzer
 
 docker_build:
 	docker build --build-arg rust_version=$(RUST_VERSION) --build-arg  bindgen_version=$(BINDGEN_VERSION) -t $(DOCKER_IMAGE) $(DIR)docker
@@ -33,8 +34,13 @@ test:
 	$(KMAKE) rustavailable
 	$(RUN) whereis depmod
 
+
+rustc_sysroot=$(shell $(RUN) rustc --print sysroot)
+RUST_LIB_SRC=$(rustc_sysroot)/lib/rustlib/src/rust/library
+
 e1000:
 	$(KMAKE) M=$(MDIR)
+	$(RUN) $(KDIR)/scripts/generate_rust_analyzer.py $(MDIR) $(KDIR) $(RUST_LIB_SRC) > $(DIR)/rust-project.json
 
 kernel:
 	$(KMAKE) -j$(shell nproc)
@@ -66,6 +72,7 @@ qemu:
   		-nographic -vga none \
 		-append "root=/dev/sda console=ttyS0" -nographic \
 		-no-reboot \
-		-nic user,model=e1000e,id=net1,net=192.168.1.0/24,dhcpstart=192.168.1.1
+		-nic user,model=e1000e,id=net1,net=192.168.1.0/24,dhcpstart=192.168.1.10
 
-	
+clangd:
+	$(RUN) $(KDIR)/scripts/clang-tools/gen_compile_commands.py -d $(KDIR) -o $(DIR)compile_commands.json

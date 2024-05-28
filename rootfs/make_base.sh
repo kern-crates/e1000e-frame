@@ -14,6 +14,7 @@ $cmd
 # 删除 root 密码
 sed -i '/^root/ { s/:x:/::/ }' $FS_SRC/etc/passwd 
 echo "127.0.0.1 localhost" > ${FS_SRC}/etc/hosts
+echo "nameserver 223.5.5.5 " >> ${FS_SRC}/etc/resolv.conf
 cat > ${FS_SRC}/etc/network/interfaces.d/enp0s2.cfg << EOF
 allow-hotplug enp0s2
 iface enp0s2 inet dhcp
