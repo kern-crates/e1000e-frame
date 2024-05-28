@@ -40,7 +40,7 @@ RUST_LIB_SRC=$(rustc_sysroot)/lib/rustlib/src/rust/library
 
 e1000:
 	$(KMAKE) M=$(MDIR)
-	$(RUN) $(KDIR)/scripts/generate_rust_analyzer.py $(MDIR) $(KDIR) $(RUST_LIB_SRC) > $(DIR)/rust-project.json
+	$(RUN) $(KDIR)/scripts/generate_rust_analyzer.py $(KDIR) $(KDIR) $(RUST_LIB_SRC) $(MDIR)> $(DIR)rust-project.json
 
 kernel:
 	$(KMAKE) -j$(shell nproc)
