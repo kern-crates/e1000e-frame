@@ -42,3 +42,9 @@ dhclient
 ping www.baidu.com
 ```
 
+```shell
+ip addr add 192.168.1.129/24 dev enp0s2
+ip link set enp0s2 up
+ip route add default via 192.168.1.1
+```
+
