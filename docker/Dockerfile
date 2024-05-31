@@ -15,7 +15,7 @@ RUN sed -i 's@http://.*ubuntu.com@http://repo.huaweicloud.com@g' /etc/apt/source
 
 RUN apt-get clean
 RUN apt-get -y update --fix-missing
-RUN apt-get install -y curl git  build-essential libssl-dev libclang-dev clang llvm lld 
+RUN apt-get install -y curl git  build-essential libssl-dev libclang-dev clang llvm lld  bear
 # 安装Rust
 
 ENV RUSTUP_DIST_SERVER "https://rsproxy.cn"

@@ -1,8 +1,8 @@
 THIS_MAKEFILE := $(abspath $(lastword $(MAKEFILE_LIST)))
 DIR := $(dir $(THIS_MAKEFILE))
 KDIR=$(DIR)linux
-MDIR=$(DIR)driver-e1000/src
-DOCKER_IMAGE=Ubuntu22/e1000
+MDIR=$(DIR)driver-e1000
+DOCKER_IMAGE=Ubuntu22/e1000v2
 RUST_VERSION=$(shell $(KDIR)/scripts/min-tool-version.sh rustc)
 BINDGEN_VERSION=$(shell $(KDIR)/scripts/min-tool-version.sh bindgen)
 RUN=docker run --rm -it -v $(DIR):$(DIR) $(DOCKER_IMAGE)
@@ -13,7 +13,7 @@ export FS_IMAGE_NAME=initrd.img
 MOD_PATH=$(FS_SRC)
 DRIVER_SRC=$(DIR)driver-e1000/src 
 
-KMAKE=$(RUN) make -C $(KDIR) O=$(KDIR) LLVM=1 
+KMAKE=$(RUN) bear -- make -C $(KDIR) O=$(KDIR) LLVM=1 
 
 default:
 	$(KMAKE) -j$(shell nproc)
@@ -40,7 +40,7 @@ RUST_LIB_SRC=$(rustc_sysroot)/lib/rustlib/src/rust/library
 
 e1000:
 	$(KMAKE) M=$(MDIR)
-	$(KMAKE) M=$(MDIR) rust-analyzer
+	# $(KMAKE) M=$(MDIR) rust-analyzer
 	# $(RUN) $(KDIR)/scripts/generate_rust_analyzer.py $(KDIR) $(KDIR) $(RUST_LIB_SRC) $(MDIR)> $(DIR)rust-project.json
 
 kernel:
