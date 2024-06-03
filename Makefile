@@ -53,8 +53,8 @@ test:
 
 
 e1000:
-	# $(RUN) bash -c "cd $(MDIR) && make KDIR=$(KDIR) $(MDIR)=$(MDIR)  rust-analyzer"
 	$(RUN) bash -c "cd $(MDIR) && bear -- make KDIR=$(KDIR) MDIR=$(MDIR) -j$(shell nproc)"
+	$(RUN) bash -c "cd $(MDIR) && make KDIR=$(KDIR) $(MDIR)=$(MDIR)  rust-analyzer"
 
 e1000_install:
 	$(KMAKE) M=$(MDIR) modules_install	INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(TMP_MOD)
