@@ -8,7 +8,7 @@ USER_ID=$(shell id -u)
 GROUP_ID=$(shell id -g)
 
 KDIR=$(DIR)linux
-MDIR=$(DIR)driver-e1000
+MDIR=$(DIR)driver-e1000/src
 DOCKER_IMAGE=Ubuntu22/e1000v2
 RUST_VERSION=$(shell $(KDIR)/scripts/min-tool-version.sh rustc)
 BINDGEN_VERSION=$(shell $(KDIR)/scripts/min-tool-version.sh bindgen)
@@ -23,6 +23,7 @@ MOD_PATH=$(FS_SRC)
 DRIVER_SRC=$(DIR)driver-e1000/src 
 KMAKE=$(RUN) make -C $(KDIR) O=$(KDIR) LLVM=1 
 OUT_DIR=$(DIR)out
+TMP_MOD=$(DIR).tmp_modules
 
 
 default:
@@ -52,12 +53,21 @@ test:
 
 
 e1000:
-	$(RUN) bash -c "cd $(MDIR) && make -C $(KDIR) M=$(MDIR)  LLVM=1 rust-analyzer"
-	$(RUN) bash -c "cd $(MDIR) && bear -- make -C $(KDIR) M=$(MDIR)  LLVM=1 -j$(shell nproc)"
+	# $(RUN) bash -c "cd $(MDIR) && make KDIR=$(KDIR) $(MDIR)=$(MDIR)  rust-analyzer"
+	$(RUN) bash -c "cd $(MDIR) && bear -- make KDIR=$(KDIR) MDIR=$(MDIR) -j$(shell nproc)"
+
+e1000_install:
+	$(KMAKE) M=$(MDIR) modules_install	INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(TMP_MOD)
+	sudo rm -rf $(FS_SRC)/lib/modules
+	sudo cp -rf .tmp_modules/lib/modules $(FS_SRC)/lib
+
+e1000_clean:
+	$(MAKE) -C $(MDIR) clean
 
 kernel:
 	$(RUN) bash -c "cd $(KDIR) && bear -- make  LLVM=1 -j$(shell nproc)"
 	$(RUN) bash -c "cd $(KDIR) && make  LLVM=1 rust-analyzer"
+	$(KMAKE) modules
 
 all:
 	$(MAKE) kernel
@@ -65,8 +75,12 @@ all:
 
 
 install:
-	$(KMAKE)  modules_install	INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(FS_SRC)
-	$(KMAKE) M=$(MDIR) modules_install	INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(FS_SRC)
+	rm -rf $(DIR).tmp_modules
+	mkdir $(DIR).tmp_modules
+	$(KMAKE)  modules_install	INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(DIR).tmp_modules
+	# $(KMAKE) M=$(MDIR) modules_install	INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(DIR).tmp_modules
+	sudo rm -rf $(FS_SRC)/lib/modules
+	sudo cp -rf .tmp_modules/lib/modules $(FS_SRC)/lib
 
 .PHONY: rootfs
 rootfs:
@@ -96,5 +110,13 @@ pack:
 	mkdir -p $(OUT_DIR)/modules
 	$(KMAKE) INSTALL_PATH=$(OUT_DIR)/boot install
 	$(KMAKE)  modules_install	INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(OUT_DIR)/modules
-	# $(KMAKE) M=$(MDIR) modules_install	INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(OUT_DIR)/modules
+	$(RUN)  make -C $(KDIR) M=$(MDIR) modules_install	LLVM=1 INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(OUT_DIR)/modules
 	tar -czf out.tar.gz -C $(DIR) out
+
+quick_test:
+	$(MAKE) e1000
+	$(MAKE) e1000_install
+	sudo rm -rf $(FS_SRC)/lib/modules
+	sudo cp -rf $(TMP_MOD)/lib/modules $(FS_SRC)/lib
+	$(MAKE) -C $(SUB_FS) image
+	$(MAKE) qemu

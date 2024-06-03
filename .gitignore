@@ -4,3 +4,4 @@ rust-project.json
 .pyenv
 out.tar.gz
 /out
+.tmp_*

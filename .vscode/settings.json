@@ -1,5 +1,5 @@
 {
     "rust-analyzer.linkedProjects": [
-        "linux/rust-project.json"
+       "driver-e1000/src/rust-project.json"
     ]
 }
