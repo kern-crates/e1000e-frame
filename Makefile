@@ -62,7 +62,7 @@ e1000_install:
 	sudo cp -rf .tmp_modules/lib/modules $(FS_SRC)/lib
 
 e1000_clean:
-	$(MAKE) -C $(MDIR) clean
+	$(RUN) bash -c "cd $(MDIR) && make KDIR=$(KDIR) $(MDIR)=$(MDIR) clean"
 
 kernel:
 	$(RUN) bash -c "cd $(KDIR) && bear -- make  LLVM=1 -j$(shell nproc)"

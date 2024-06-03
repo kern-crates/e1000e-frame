@@ -22,7 +22,9 @@ include_version = false
 namespaces = []
 using_namespaces = []
 sys_includes = []
-includes = []
+includes = [
+    "linux/types.h"
+]
 no_includes = true
 # cpp_compat = true
 after_includes = ""

@@ -1,5 +1,9 @@
 {
     "rust-analyzer.linkedProjects": [
        "driver-e1000/src/rust-project.json"
-    ]
+    ],
+    "clangd.arguments": [
+        "--compile-commands-dir=driver-e1000/src"
+    ],
+    
 }
