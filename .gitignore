@@ -1,3 +1,6 @@
 compile_commands.json
 .cache
 rust-project.json
+.pyenv
+out.tar.gz
+/out

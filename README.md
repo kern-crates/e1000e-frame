@@ -48,3 +48,19 @@ ip link set enp0s2 up
 ip route add default via 192.168.1.1
 ```
 
+# 物理机测试
+
+```shell
+# 打包
+make pack
+
+#目标机器
+rm -rf out
+tar -xvf out.tar.gz
+cp -rf out/boot/* /boot
+cp -rf out/modules/lib/modules/* /lib/modules
+dracut /boot/initramfs-6.1.0.img 6.1.0
+grub2-mkconfig -o /boot/efi/EFI/openEuler/grub.cfg
+
+reboot
+```
