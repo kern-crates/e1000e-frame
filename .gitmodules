@@ -5,3 +5,6 @@
 	path = driver-e1000
 	url = git@gitee.com:zr233/e1000-rust.git
 
+[submodule "fs_busybox"]
+	path = fs_busybox
+	url = git@gitee.com:zr233/fs_busybox.git

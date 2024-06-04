@@ -15,9 +15,11 @@ BINDGEN_VERSION=$(shell $(KDIR)/scripts/min-tool-version.sh bindgen)
 BINDGEN_CMD=$(shell $(PYTHON) $(DIR)check_bindgen.py $(BINDGEN_VERSION))
 DOCKER_RUN_BASE=docker run --rm -it  --user "$(USER_ID):$(GROUP_ID)" -v $(DIR):$(DIR) 
 RUN=$(DOCKER_RUN_BASE) $(DOCKER_IMAGE)
-SUB_FS=$(DIR)rootfs
+# SUB_FS=$(DIR)rootfs
+SUB_FS=$(DIR)fs_busybox/build
 export FS_BASE=fs_base
-export FS_SRC=$(SUB_FS)/$(FS_BASE)
+# export FS_SRC=$(SUB_FS)/$(FS_BASE)
+export FS_SRC=$(DIR)fs_busybox/build/_install
 export FS_IMAGE_NAME=initrd.img
 MOD_PATH=$(FS_SRC)
 DRIVER_SRC=$(DIR)driver-e1000/src 
@@ -80,6 +82,7 @@ install:
 	$(KMAKE)  modules_install	INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(DIR).tmp_modules
 	# $(KMAKE) M=$(MDIR) modules_install	INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(DIR).tmp_modules
 	sudo rm -rf $(FS_SRC)/lib/modules
+	sudo mkdir -p $(FS_SRC)/lib
 	sudo cp -rf .tmp_modules/lib/modules $(FS_SRC)/lib
 
 .PHONY: rootfs
@@ -104,6 +107,14 @@ clangd:
 	$(RUN) $(KDIR)/scripts/clang-tools/gen_compile_commands.py -d $(KDIR) -o $(DIR)compile_commands.json
 
 
+busybox:
+	sudo rm -rf $(DIR)fs_busybox/build
+	$(RUN) bash -c "cd $(DIR)fs_busybox && ./step_build.sh"
+	bash -c "cd $(DIR)fs_busybox && ./step_add_need.sh"
+busybox_image:
+	$(MAKE) install
+	bash -c "cd $(DIR)/fs_busybox && ./pack.sh"	
+
 pack: 
 	rm -rf $(OUT_DIR)
 	mkdir -p $(OUT_DIR)/boot
@@ -118,5 +129,6 @@ quick_test:
 	$(MAKE) e1000_install
 	sudo rm -rf $(FS_SRC)/lib/modules
 	sudo cp -rf $(TMP_MOD)/lib/modules $(FS_SRC)/lib
-	$(MAKE) -C $(SUB_FS) image
+	bash -c "cd $(DIR)/fs_busybox && ./pack.sh"	
+	# $(MAKE) -C $(SUB_FS) image
 	$(MAKE) qemu
