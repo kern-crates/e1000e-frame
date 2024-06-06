@@ -104,7 +104,8 @@ qemu:
 		-nic user,model=e1000e,id=net1,net=192.168.1.0/24,dhcpstart=192.168.1.10
 
 clangd:
-	$(RUN) $(KDIR)/scripts/clang-tools/gen_compile_commands.py -d $(KDIR) -o $(DIR)compile_commands.json
+	# $(RUN) $(KDIR)/scripts/clang-tools/gen_compile_commands.py -d $(KDIR) -o $(DIR)compile_commands.json
+	$(RUN) $(KDIR)/scripts/clang-tools/gen_compile_commands.py -d $(MDIR) -o $(MDIR)/compile_commands.json
 
 
 busybox:
@@ -125,6 +126,7 @@ pack:
 	tar -czf out.tar.gz -C $(DIR) out
 
 quick_test:
+	$(MAKE) e1000_clean
 	$(MAKE) e1000
 	$(MAKE) e1000_install
 	sudo rm -rf $(FS_SRC)/lib/modules
