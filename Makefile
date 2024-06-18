@@ -67,9 +67,10 @@ e1000_clean:
 	$(RUN) bash -c "cd $(MDIR) && make KDIR=$(KDIR) $(MDIR)=$(MDIR) clean"
 
 kernel:
-	$(RUN) bash -c "cd $(KDIR) && bear -- make  LLVM=1 -j$(shell nproc)"
-	$(RUN) bash -c "cd $(KDIR) && make  LLVM=1 rust-analyzer"
+	$(RUN) bash -c "cd $(KDIR) && make  LLVM=1 -j$(shell nproc)"
 	$(KMAKE) modules
+	$(MAKE) clangd
+	$(RUN) bash -c "cd $(KDIR) && make  LLVM=1 rust-analyzer"
 
 all:
 	$(MAKE) kernel
@@ -95,16 +96,21 @@ rootfs_clean:
 	$(MAKE) -C $(SUB_FS) clean
 
 qemu: 
+	sudo rm -f qemu.pcap
+	sudo rm -f log.txt
 	sudo qemu-system-x86_64 -smp 2 -m 2G \
   		-kernel "$(KDIR)/arch/x86_64/boot/bzImage" \
   		-hda $(SUB_FS)/initrd.img \
   		-nographic -vga none \
 		-append "root=/dev/sda console=ttyS0" -nographic \
 		-no-reboot \
-		-nic user,model=e1000e,id=net1,net=192.168.1.0/24,dhcpstart=192.168.1.10
+		-D ./log.txt \
+		-nic user,model=e1000e,id=net1 \
+		-object filter-dump,id=dump,netdev=net1,file=qemu.pcap\
+		--trace "e1000*"
 
 clangd:
-	# $(RUN) $(KDIR)/scripts/clang-tools/gen_compile_commands.py -d $(KDIR) -o $(DIR)compile_commands.json
+	$(RUN) $(KDIR)/scripts/clang-tools/gen_compile_commands.py -d $(KDIR) -o $(DIR)compile_commands.json
 	$(RUN) $(KDIR)/scripts/clang-tools/gen_compile_commands.py -d $(MDIR) -o $(MDIR)/compile_commands.json
 
 

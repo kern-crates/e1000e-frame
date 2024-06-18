@@ -43,10 +43,10 @@ ping www.baidu.com
 ```
 
 ```shell
-ip addr add 192.168.1.129/24 dev eth0
+ip addr add 10.0.2.15/24 dev eth0
 ip link set eth0 up
-ip route add default via 192.168.1.1
-ping 127.0.0.1
+ip route add default via 10.0.2.2
+ping 10.0.2.2
 ```
 
 # 物理机测试

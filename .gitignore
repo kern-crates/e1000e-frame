@@ -5,3 +5,5 @@ rust-project.json
 out.tar.gz
 /out
 .tmp_*
+qemu.pcap
+log.txt
