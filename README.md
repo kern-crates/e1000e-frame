@@ -64,4 +64,6 @@ dracut /boot/initramfs-6.1.0.img 6.1.0
 grub2-mkconfig -o /boot/efi/EFI/openEuler/grub.cfg
 
 reboot
+
+echo "8    4    1    7" > /proc/sys/kernel/printk
 ```

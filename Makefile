@@ -102,7 +102,7 @@ qemu:
   		-kernel "$(KDIR)/arch/x86_64/boot/bzImage" \
   		-hda $(SUB_FS)/initrd.img \
   		-nographic -vga none \
-		-append "root=/dev/sda console=ttyS0" -nographic \
+		-append "root=/dev/sda console=ttyS0 loglevel=8" -nographic \
 		-no-reboot \
 		-D ./log.txt \
 		-nic user,model=e1000e,id=net1 \
@@ -128,7 +128,7 @@ pack:
 	mkdir -p $(OUT_DIR)/modules
 	$(KMAKE) INSTALL_PATH=$(OUT_DIR)/boot install
 	$(KMAKE)  modules_install	INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(OUT_DIR)/modules
-	$(RUN)  make -C $(KDIR) M=$(MDIR) modules_install	LLVM=1 INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(OUT_DIR)/modules
+	# $(RUN)  make -C $(KDIR) M=$(MDIR) modules_install	LLVM=1 INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(OUT_DIR)/modules
 	tar -czf out.tar.gz -C $(DIR) out
 
 quick_test:
