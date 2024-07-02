@@ -21,11 +21,14 @@ make menuconfig
 # build linux and e1000
 make all
 
-# 创建文件系统
-make rootfs
+# 编译busybox
+make busybox
 
-# 运行qemu，用户root，没有密码
-make qemu
+# 创建文件系统
+make busybox_image
+
+# 运行qemu
+make quick_test
 ```
 
 # 网络测试
@@ -35,7 +38,7 @@ make qemu
 # 卸载e1000e
 rmmod e1000e
 # 挂载rust e1000
-modprobe e1000-for-linux
+modprobe e1000-rs
 ip link set dev enp0s2 down
 ip link set dev enp0s2 up
 dhclient 
@@ -43,6 +46,8 @@ ping www.baidu.com
 ```
 
 ```shell
+# busybox
+modprobe e1000-rs
 ip addr add 10.0.2.15/24 dev eth0
 ip link set eth0 up
 ip route add default via 10.0.2.2

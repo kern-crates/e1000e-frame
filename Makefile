@@ -102,7 +102,7 @@ qemu:
   		-kernel "$(KDIR)/arch/x86_64/boot/bzImage" \
   		-hda $(SUB_FS)/initrd.img \
   		-nographic -vga none \
-		-append "root=/dev/sda console=ttyS0 loglevel=8" -nographic \
+		-append "root=/dev/sda console=ttyS0" -nographic \
 		-no-reboot \
 		-D ./log.txt \
 		-nic user,model=e1000e,id=net1 \
