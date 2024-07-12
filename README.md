@@ -6,6 +6,12 @@
 sudo apt install qemu-system  qemu-user-static  debootstrap -y
 ```
 
+# 获取源码
+
+```shell
+git clone --recursive https://gitee.com/zr233/e1000e-frame.git
+```
+
 # 构建与运行
 
 ```shell
@@ -15,7 +21,7 @@ make docker_build
 # linux 默认配置
 make defconfig
 
-# linux 配置，需打开 Rust，并把e1000、e1000e 设为 <M>
+# linux 配置，需打开 Rust，并把e1000、e1000e 设为 < >
 make menuconfig
 
 # build linux and e1000
@@ -65,7 +71,7 @@ rm -rf out
 tar -xvf out.tar.gz
 cp -rf out/boot/* /boot
 cp -rf out/modules/lib/modules/* /lib/modules
-dracut /boot/initramfs-6.1.0.img 6.1.0
+dracut /boot/initramfs-6.6.0-rc4+.img 6.6.0-rc4+
 grub2-mkconfig -o /boot/efi/EFI/openEuler/grub.cfg
 
 reboot
