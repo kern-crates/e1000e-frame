@@ -1,0 +1,12 @@
+{
+  "name": "e1000e-frame",
+  "description": "This is a framework for developing e1000e driver.",
+  "authors": [{
+    "name": "周睿",
+    "email": "zrufo747@outlook.com"
+  }],
+  "keywords": ["driver", "e1000e"],
+  "test_repos": [],
+  "repo": "qclic/e1000e-frame",
+  "doc_url": "https://github.com/qclic/e1000e-frame"
+}
